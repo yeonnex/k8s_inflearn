@@ -11,6 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class ProductService {
@@ -22,12 +24,15 @@ public class ProductService {
         this.memberRepository = memberRepository;
     }
 
-    public Product productCreate(ProductRegisterDto dto){
+    public Product productCreate(ProductRegisterDto dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = memberRepository.findById(Long.parseLong(authentication.getName())).orElseThrow(()->new EntityNotFoundException("member is not found"));
+        Member member = memberRepository.findById(Long.parseLong(authentication.getName())).orElseThrow(() -> new EntityNotFoundException("member is not found"));
 
         Product product = productRepository.save(dto.toEntity(member));
         return product;
     }
 
+    public List<Product> findAll() {
+        return productRepository.findAll();
+    }
 }
